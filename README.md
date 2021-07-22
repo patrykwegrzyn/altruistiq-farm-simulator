@@ -2,6 +2,8 @@
 
 ## Usage
 
+use `node >= 12`
+
 to start backend api 
 
 `cd backend `
