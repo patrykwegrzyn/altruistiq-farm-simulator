@@ -9,6 +9,7 @@ to start backend api
 `node service.js`
 
 to start frontend 
+
 `cd frontend `
 `npm install`
-`npm startP`
+`npm start`
