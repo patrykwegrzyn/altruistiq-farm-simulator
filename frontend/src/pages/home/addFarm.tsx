@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FormEvent, FormEventHandler, useState } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -21,7 +21,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function FormDialog({ done }) {
+
+interface Props {
+  done: () => void
+}
+
+export default function FormDialog({ done }: Props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
@@ -44,7 +49,7 @@ export default function FormDialog({ done }) {
     setOpen(false);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     await addFarm({
       variables: {
@@ -78,7 +83,7 @@ export default function FormDialog({ done }) {
                 label="Farm Name"
                 type="text"
                 value={name}
-                onInput={(e) => setName(e.target.value)}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                 fullWidth
               />
               <TextField
@@ -87,7 +92,7 @@ export default function FormDialog({ done }) {
                 label="Farm size (Azres)"
                 type="number"
                 value={acres}
-                onInput={(e) => setAcres(parseInt(e.target.value))}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => setAcres(parseInt(e.target.value))}
                 fullWidth
               />
             </div>
@@ -99,7 +104,7 @@ export default function FormDialog({ done }) {
                 label="Number of Tractors"
                 type="number"
                 value={tractors}
-                onInput={(e) => setTractors(parseInt(e.target.value))}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => setTractors(parseInt(e.target.value))}
                 fullWidth
               />
               <TextField
@@ -108,7 +113,7 @@ export default function FormDialog({ done }) {
                 label="Usage (l/100mile)"
                 type="number"
                 value={tractors_usage}
-                onInput={(e) => setTractorsUsage(parseFloat(e.target.value))}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => setTractorsUsage(parseFloat(e.target.value))}
                 fullWidth
               />
             </div>
@@ -119,7 +124,7 @@ export default function FormDialog({ done }) {
                 label="Number of Milk machines"
                 type="number"
                 value={milk_machines}
-                onInput={(e) => setMilkMachines(parseInt(e.target.value))}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => setMilkMachines(parseInt(e.target.value))}
                 fullWidth
               />
               <TextField
@@ -128,7 +133,7 @@ export default function FormDialog({ done }) {
                 label="Usage (kWh)"
                 type="number"
                 value={milk_machines_kwh}
-                onInput={(e) => setMilkMachinesKwh(parseFloat(e.target.value))}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => setMilkMachinesKwh(parseFloat(e.target.value))}
                 fullWidth
               />
             </div>
@@ -139,7 +144,7 @@ export default function FormDialog({ done }) {
                 label="Number of Cows"
                 type="number"
                 value={cows}
-                onInput={(e) => setCows(parseInt(e.target.value))}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => setCows(parseInt(e.target.value))}
                 fullWidth
               />
               <TextField
@@ -148,7 +153,7 @@ export default function FormDialog({ done }) {
                 label="Liters  of milk produced"
                 type="number"
                 value={milk_produced}
-                onInput={(e) => setMilkProduced(parseInt(e.target.value))}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => setMilkProduced(parseInt(e.target.value))}
                 fullWidth
               />
             </div>

@@ -15,6 +15,9 @@ import Typography from "@material-ui/core/Typography";
 
 import { makeStyles } from "@material-ui/core/styles";
 
+
+import { FarmRow , PurchaseRow} from "../../types";
+
 const useRowStyles = makeStyles({
   root: {
     "& > *": {
@@ -23,11 +26,18 @@ const useRowStyles = makeStyles({
   },
 });
 
-const alignCells = (i, c=0) => i==c ? "left" : "right";
+const alignCells = (i: number, c=0) => i==c ? "left" : "right";
 
-function Purchases({ data }) {
-  
-  const tableRow = (row ) => {
+
+
+type PurchaseProps = {
+  data: PurchaseRow[];
+};
+
+
+function Purchases(props: PurchaseProps) {
+  const {data}  = props;
+  const tableRow = (row : PurchaseRow) => {
   
     return (
       <TableRow key={row.id}>
@@ -61,7 +71,15 @@ function Purchases({ data }) {
   );
 }
 
-function Row({ row }) {
+
+
+type FarmRowProps = {
+  row : FarmRow
+}
+
+function Row(props : FarmRowProps) : JSX.Element {
+  const { row } = props;
+
   const [open, setOpen] = useState(false);
   const classes = useRowStyles();
   //console.log("row", row);
@@ -92,8 +110,8 @@ function Row({ row }) {
           </IconButton>
         </TableCell>
         <TableCell size="small">
-          {row.name
-            .match(/\b(\w)/g)
+          { row.name
+            .match(/\b(\w)/g) || []
             .join("")
             .toUpperCase()}
         </TableCell>
@@ -116,7 +134,11 @@ const useTableStyles = makeStyles({
   },
 });
 
-function MainTable({ data }) {
+interface MainTableProps {
+  data: FarmRow[];
+}
+
+function MainTable({ data } : MainTableProps) {
   const classes = useTableStyles();
   const headers = [
     "",
@@ -141,7 +163,7 @@ function MainTable({ data }) {
         <TableRow>{headers}</TableRow>
       </TableHead>
       <TableBody>
-        {data.map((row) => (
+        {data.map((row : FarmRow) => (
           <Row key={row.id} row={row} />
         ))}
       </TableBody>

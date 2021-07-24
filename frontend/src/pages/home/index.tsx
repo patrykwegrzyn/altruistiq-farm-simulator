@@ -8,7 +8,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 
-import UpladFiles from "../../components/upload/index.js";
+import UpladFiles from "../../components/upload";
 import AddFarm from "./addFarm";
 import BarChart from "./chart";
 import MainTable from "./table";

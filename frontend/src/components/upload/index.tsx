@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
@@ -26,44 +26,54 @@ const useStyles = makeStyles({
   },
 });
 
-function UploadFiles({ onDone }) {
+
+type Props = {
+  onDone: () => void;
+};
+
+function UploadFiles({ onDone }: Props) {
 
   const classes = useStyles();
-  const [progress, setProgress] = useState(0);
-  const [selectedFile, setSelectedFile] = useState([]);
-  const [message, setMessage] = useState("");
+  const [progress, setProgress] = useState<number>(0);
+  const [selectedFile, setSelectedFile] = useState<FileList | null>(null);
+  const [message, setMessage] = useState<string>("");
 
-  const selectFile = (event) => {
-    setSelectedFile(event.target.files);
+  const selectFile = (event : ChangeEvent<HTMLInputElement>) : void => {
+
+    if (!event.target.files?.length) {
+        return;
+    }
+
+    const files = event.target.files;
+    setSelectedFile(files);
   };
 
   const upload = () => {
-    let currentFile = selectedFile[0];
+    let currentFile = selectedFile && selectedFile[0];
 
     setProgress(0);
 
-    uploadFileService(currentFile, (event) => {
+    uploadFileService(currentFile, (event : ProgressEvent) => {
       setProgress(Math.round((100 * event.loaded) / event.total));
-    }).then((files) => {
-      setFileInfos(files.data);
     })
       .then((response) => {
         setMessage(response.data.message);
         setProgress(0);
-        setSelectedFile([]);
+        setSelectedFile(null);
         onDone()
       })
 
       .catch(() => {
         setProgress(0);
         setMessage("Could not upload the file!");
-        setSelectedFile([]);
+        setSelectedFile(null);
         onDone()
 
       });
 
   };
 
+  const currentFile = selectedFile && selectedFile[0];
   return (
     <div style={{ padding: 50 }}>
       <Card className={classes.root}>
@@ -71,8 +81,8 @@ function UploadFiles({ onDone }) {
           <Typography className={classes.title} color="textSecondary" gutterBottom>
             Please select file
           </Typography>
-          {selectedFile[0] && (
-            <LinearWithValueLabel progress={progress} />
+          {currentFile && (
+            <LinearWithValueLabel value={progress} />
           )}
           <Typography variant="h5" component="h2">
             <label className="btn btn-default">
@@ -85,7 +95,7 @@ function UploadFiles({ onDone }) {
 
         </CardContent>
         <CardActions>
-          <Button size="small" disabled={!selectedFile[0]} onClick={upload} >Upload</Button>
+          <Button size="small" disabled={!currentFile} onClick={upload} >Upload</Button>
         </CardActions>
       </Card>
 

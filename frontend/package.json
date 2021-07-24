@@ -21,7 +21,8 @@
     "graphql": "^15.5.1",
     "react": "latest",
     "react-dom": "latest",
-    "react-scripts": "latest"
+    "react-scripts": "latest",
+    "typescript": "^4.3.5"
   },
   "browserslist": {
     "production": [

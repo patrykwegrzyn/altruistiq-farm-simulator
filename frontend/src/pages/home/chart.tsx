@@ -1,11 +1,22 @@
 import React from "react";
-import { ResponsiveBar } from "@nivo/bar";
+import { ResponsiveBar, BarDatum} from "@nivo/bar";
 
-const BarChart = ({ data }) => {
-  const chartData = data.map((row) => {
+import { FarmRow } from '../../types';
+
+interface Props {
+  data: FarmRow[]
+}
+
+interface ChartData extends BarDatum {
+  short: string;
+}
+
+
+const BarChart = ({ data } : Props) => {
+  const chartData= data.map((row : FarmRow): ChartData => {
     return {
-      short: row.name
-        .match(/\b(\w)/g)
+      short: (row.name
+        .match(/\b(\w)/g) || [])
         .join("")
         .toUpperCase(),
       name: row.name,
@@ -27,7 +38,6 @@ const BarChart = ({ data }) => {
         layout="vertical"
         valueScale={{ type: "linear" }}
         indexScale={{ type: "band", round: true }}
-        valueFormat={{ format: "", enabled: false }}
         colors={{ scheme: "nivo" }}
         borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
         axisTop={null}
@@ -37,7 +47,7 @@ const BarChart = ({ data }) => {
           tickPadding: 5,
           tickRotation: 0,
           legend: "Farm",
-          legendPosition: "left",
+          // legendPosition: "left",
           legendOffset: 40,
         }}
         axisLeft={{
