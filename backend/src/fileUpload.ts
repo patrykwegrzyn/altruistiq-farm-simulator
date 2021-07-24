@@ -1,14 +1,17 @@
-const excelToJson = require("convert-excel-to-json");
-
+import  excelToJson from "convert-excel-to-json";
+import { Response } from 'express';
 const { farms, purchases } = require("./store");
 
+import { FarmRaw, Purchase } from "./types"
+
+
 const convert = {
-  gal2l: (g) => g / 0.21997,
-  tone2kg: (t) => t / 1000,
+  gal2l: (g:number) => g / 0.21997,
+  tone2kg: (t: number) => t / 1000,
 };
 
-function FarmModel(farm) {
-  farm = Object.keys(farm).reduce((obj, key) => {
+function FarmModel(farm: FarmRaw): FarmRaw {
+  farm = Object.keys(farm).reduce((obj:any, key:string): FarmRaw => {
     let val = farm[key];
     // convert coma separate numbers to actual floats
     if (key !== "name" && typeof val === "string") {
@@ -41,7 +44,7 @@ function FarmModel(farm) {
 }
 
 // standardise units to kg , liters
-function PurchaseModel(purchase) {
+function PurchaseModel(purchase: Purchase) {
   let { amount, unit } = purchase;
 
   switch (unit) {
@@ -58,7 +61,7 @@ function PurchaseModel(purchase) {
   return { ...purchase, amount, unit };
 }
 
-module.exports = async (req, res) => {
+export default async (req : any, res: Response) => {
   const { Farms, Purchases } = excelToJson({
     source: req.files.file.data,
     sheets: [

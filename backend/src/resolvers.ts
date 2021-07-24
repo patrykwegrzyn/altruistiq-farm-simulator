@@ -6,7 +6,9 @@ const co2Factors = {
   Food: 1.3289, // per kg,
 };
 
-const purchaseskgCO2eStats = (purchase) => {
+import { Farm, Purchase, Stat, FoodStat } from "./types"
+
+const purchaseskgCO2eStats = (purchase: Purchase): number => {
   const { type, amount } = purchase;
   let kgCO2e = 0;
   switch (type) {
@@ -22,7 +24,7 @@ const purchaseskgCO2eStats = (purchase) => {
   return kgCO2e;
 };
 
-const milkMachineStats = (farm) => {
+const milkMachineStats = (farm: Farm) => {
   const { milk_machines, milk_machines_kwh } = farm;
   const consumedKWH = 16 * milk_machines * milk_machines_kwh;
   return {
@@ -31,7 +33,7 @@ const milkMachineStats = (farm) => {
   };
 };
 
-const tractorStats = (farm) => {
+const tractorStats = (farm: Farm): Stat => {
   // assuming each tractore does equal millage
   // some imaginary factor i have no idea how to corolate tractor usage with acres
   const { acres, tractors, tractors_usage } = farm;
@@ -45,7 +47,7 @@ const tractorStats = (farm) => {
   };
 };
 
-const foodStats = (farm) => {
+const foodStats = (farm: Farm):FoodStat => {
   const { cows } = farm;
   const soyConsumedKg = cows * 3; // 3kg /day/cow
   const grassConsumedKg = cows * 14; // 14kg /day/cow
@@ -73,9 +75,9 @@ const foodStats = (farm) => {
 const resolvers = {
   Query: {
     listFarms: () => {
-      return farms.get().map((farm) => {
+      return farms.get().map((farm: Farm) => {
         const { name, milk_produced } = farm;
-        const purchasesData = purchases.get().map((purchase) => {
+        const purchasesData = purchases.get().map((purchase: Purchase) => {
           const kgCO2e = purchaseskgCO2eStats(purchase);
           return { ...purchase, kgCO2e };
         });
@@ -86,14 +88,14 @@ const resolvers = {
           milk_machinesUsage: milkMachineStats(farm),
         };
 
-        const farmPurchases = purchasesData.filter((p) => p.farm === name);
+        const farmPurchases = purchasesData.filter((p: Purchase) => p.farm === name);
 
         const totalkgCO2e =
           Math.round(
             (stats.food.total.kgCO2e +
               stats.tractorsUsage.kgCO2e +
               stats.milk_machinesUsage.kgCO2e) *
-              100
+            100
           ) / 100;
         const kgCO2eperlmilk = (totalkgCO2e / milk_produced).toFixed(2);
 
@@ -103,17 +105,16 @@ const resolvers = {
           purchases,
           totalkgCO2e,
           kgCO2eperlmilk,
-          purchases: farmPurchases,
+          ...{purchases: farmPurchases},
         };
       });
     },
   },
   Mutation: {
-    addFarm: async (_, args, { dataSources }) => {
+    addFarm: async (_:any, args: Farm) => {
       farms.add(args);
       return { args };
     },
   },
 };
-
-module.exports = resolvers;
+export default resolvers;
